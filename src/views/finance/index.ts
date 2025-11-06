@@ -8,7 +8,6 @@ const Withdraw = () => import('@views/finance/withdraw/index.vue');
 const financeRoute: RouteRecordRaw = {
   path: '/finance',
   name: 'Finance',
-  redirect: '/finance/transaction', 
   component: RouterViewOnly, 
   meta: {
     title: '财务报表',

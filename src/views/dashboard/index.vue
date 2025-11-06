@@ -1,6 +1,6 @@
 <template>
-  <div class="home-view">
-    <h1>Welcome to the Home Page</h1>
+  <div class="home-view" style="color:#fff">
+    <h1>Welcome to the dashborad Page</h1>
   </div>
 </template>
 

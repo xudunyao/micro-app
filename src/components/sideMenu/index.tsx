@@ -9,6 +9,7 @@ interface MenuItem {
   icon?: VNode
   link?: string
   visible?: boolean
+  defaultChild?: string
   children?: MenuItem[]
 }
 
@@ -46,22 +47,42 @@ export default defineComponent({
       { immediate: true }
     )
     const rootSubmenuKeys = props.menus?.map(({ key }) => key) || []
-    const handleOpen = (index: string, indexPath: string[]) => {
+    const handleOpen = (key: string, indexPath: string[]) => {
       const latestOpenKey = indexPath.find(
         (key) => !openKeys.value.includes(key)
       )
+    
       if (rootSubmenuKeys.includes(latestOpenKey || '')) {
+        // 👉 保证只展开一个根菜单
         openKeys.value = latestOpenKey ? [latestOpenKey] : []
+    
+        // 🧩 找出当前菜单对象
+        const menu = (props.menus || []).find((m) => m.key === latestOpenKey)
+        if (menu && menu.children && menu.children.length) {
+          // 🧠 判断是否有配置 defaultChild
+          const defaultChild =
+            menu.children.find((child) => child.key === menu.defaultChild) ||
+            menu.children[0] // 默认第一个
+    
+          // 🚀 跳转（或 emit 给父组件处理）
+          if (defaultChild?.link) {
+            router.push(defaultChild.link)
+          } else if (defaultChild?.key) {
+            router.push(defaultChild.key)
+          }
+        }
       } else {
         openKeys.value = [...indexPath]
       }
     }
-    const handleClose = (index: string, indexPath: string[]) => {
-      openKeys.value = openKeys.value.filter((k) => k !== index)
+    const handleClose = (key: string, indexPath: string[]) => {
+      openKeys.value = openKeys.value.filter((k) => k !== key)
     }
     // 菜单选中时的逻辑
     const handleSelect = (index: string) => {
       const menu = findMenuByKey(props.menus || [], index)
+      console.log('Selected menu:', menu)
+      console.log('Router instance:', index)
       if (menu) handleMenuClick(menu)
     }
     const findMenuByKey = (menus: MenuItem[], key: string): MenuItem | null => {

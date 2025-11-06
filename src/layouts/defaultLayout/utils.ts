@@ -64,7 +64,6 @@ export const getMenusFromRoutes = (
   let currentMenuKeys: string[] = []
   // 遍历所有路由节点
   routes.forEach((route) => {
-    console.log('=================routes===================',route)
     const options = route.meta
     const children = route.children
     // 没有 key 的路由不参与菜单生成
